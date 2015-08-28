@@ -13,18 +13,26 @@
     ],
     "params": [
         {
-            "name": "EXAMPLE",
+            "name": "LOADIMPACT_APIKEY",
             "type": "Text",
             "required": "true",
-            "default_value": "10",
-            "label_key": "EXAMPLE_KEY",
-            "desc_key": "EXAMPLE_DESC"
+            "default_value": "",
+            "label_key": "APIKEY_KEY",
+            "desc_key": "APIKEY_DESC"
+        },
+        {
+            "name": "LOADIMPACT_TEST_ID",
+            "type": "Text",
+            "required": "true",
+            "default_value": "",
+            "label_key": "TESTID_KEY",
+            "desc_key": "TESTID_DESC"
         }
     ],
     "outputs": [
         {
             "type": "Artifacts",
-            "inclusion" : "always"
+            "inclusion": "always"
         },
         {
             "type": "Tests",
@@ -37,8 +45,8 @@
 set +x
 set +e
 export INIT_START_TIME=$(date +\"%s\")
-
-export APP_NAME
+export LOADIMPACT_API_TOKEN=#LOADIMPACT_APIKEY#
+export TEST_ID=#LOADIMPACT_TEST_ID#
 
 . $EXT_DIR/_init.sh
 INIT_END_TIME=$(date +\"%s\")
@@ -48,7 +56,9 @@ echo -e \"Init runtime of `date -u -d @\"$INIT_EST_TIME\" +\'%-Mm %-Ss\'`\"
 APP_URL=$(cf app $APP_NAME | grep 'urls:' | awk '{print $2}' | cut -d '*' -f 2)
 export APP_URL
 
-${EXT_DIR}/run.py
+sudo apt-get -qq install python python-tk python-pip python-dev        
+        
+${EXT_DIR}/load_impact.py
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
@@ -56,9 +66,8 @@ if [ $RESULT -ne 0 ]; then
 fi
 
 "
-    }
     },
     "project": "https://hub.jazz.net/project/alchemy/Alchemy-Ostanes",
-    "project_example": "",
-    "project_contact": "someone@us.ibm.com"
+    "project_example": "https://github.com/blazemeter_static",
+    "project_contact": "elobeto@us.ibm.com"
 }
